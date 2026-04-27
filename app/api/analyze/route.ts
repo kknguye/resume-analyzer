@@ -35,19 +35,31 @@ export async function POST(req: NextRequest) {
       
       Job Description: ${jobDescription}
       
-      As a recruiter, provide:
-      1. A fit score out of 100
-      2. What makes this candidate a strong fit
-      3. What gaps or concerns you have
-      4. A clear verdict: Should they apply? Yes, No, or Maybe — and why in 2-3 sentences
-      
-      Be direct and honest, like a real recruiter would be.
+      Respond ONLY with a valid JSON object in exactly this shape, no extra text:
+      {
+        "overallFit": "excellent" | "good" | "moderate" | "poor",
+        "fitScore": number between 0-100,
+        "summary": "2-3 sentence honest recruiter summary",
+        "matchingSkills": ["skill1", "skill2"],
+        "missingSkills": ["skill1", "skill2"],
+        "keyStrengths": ["strength1", "strength2"],
+        "potentialConcerns": ["concern1", "concern2"],
+        "resumeImprovements": [
+          {
+            "area": "area name",
+            "suggestion": "specific suggestion",
+            "priority": "high" | "medium" | "low"
+          }
+        ]
+      }
     `;
 
     const result = await model.generateContent(prompt);
     const text = result.response.text();
+    const cleaned = text.replace(/```json|```/g, "").trim();
+    const analysis = JSON.parse(cleaned);
 
-    return NextResponse.json({ analysis: text });
+    return NextResponse.json({ analysis });
 
   } catch (error) {
     console.error("Analysis error:", error);
