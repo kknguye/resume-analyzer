@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Resume Analyzer | AI-Powered Job Fit Assessment',
+  title: 'ResumeMatch | AI-Powered Job Fit Assessment',
   description: 'Upload your resume and paste a job description to get instant AI-powered feedback on your fit, matching skills, and personalized improvement suggestions.',
 }
 
