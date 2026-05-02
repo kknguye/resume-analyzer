@@ -7,18 +7,20 @@ import { FileSearch, Sparkles, Target, Zap, ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 interface Analysis {
+  verdict: 'yes' | 'no' | 'maybe'
+  verdictReason: string
   overallFit: 'excellent' | 'good' | 'moderate' | 'poor'
   fitScore: number
   summary: string
   matchingSkills: string[]
   missingSkills: string[]
+  keyStrengths: string[]
   resumeImprovements: {
     area: string
     suggestion: string
     priority: 'high' | 'medium' | 'low'
   }[]
-  keyStrengths: string[]
-  potentialConcerns: string[]
+  areasToAddress: string[]
 }
 
 export default function Home() {
@@ -126,7 +128,10 @@ export default function Home() {
         </>
       ) : (
         <section className="mx-auto max-w-6xl px-6 py-12 w-full flex-1">
-          <Button variant="ghost" onClick={handleReset} className="mb-6 gap-2">
+          <Button 
+            onClick={handleReset} 
+            className="mb-6 gap-2 cursor-pointer hover:bg-primary/80 px-6 py-5 glow-primary-40"
+          >
             <ArrowLeft className="h-4 w-4" />
             Analyze Another Resume
           </Button>
@@ -137,9 +142,9 @@ export default function Home() {
       {/* Footer */}
       <footer className="mt-auto border-t border-border/50 bg-card/20">
         <div className="mx-auto max-w-6xl px-6 py-6">
-          <p className="text-center text-sm text-muted-foreground">
-            Your resume data is processed securely and never stored.
-          </p>
+        <p className="text-center text-sm text-muted-foreground">
+          Your resume is never stored. Data is processed via Gemini AI and subject to Google's privacy policy.
+        </p>
         </div>
       </footer>
     </main>

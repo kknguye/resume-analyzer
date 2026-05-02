@@ -42,23 +42,33 @@ export async function POST(req: NextRequest) {
     Job Description: ${jobDescription}
     
     Instructions:
-    - Be specific and honest — avoid generic feedback
+    - Be specific and honest. Avoid generic feedback
     - Only list skills as "matching" if they are explicitly mentioned in both the resume and job description
     - Only list skills as "missing" if they are explicitly required or strongly preferred in the job description
     - When evaluating dates, compare against today's date (${today}). Do not flag past events as future concerns
     - Base the fit score purely on how well the candidate's experience and skills match the job requirements
+    - keyStrengths should highlight broader qualities beyond just skills. Communication, work ethic, experience level, etc.
     - Keep suggestions in resumeImprovements actionable and specific to this role
-    - potentialConcerns should only include genuine red flags, not minor issues
-    
+    - areasToAddress should only include genuine red flags, not minor issues. If there are none, return an empty array []
+    - verdict should be "yes" if fitScore >= 70, "maybe" if fitScore >= 50, "no" if fitScore < 50
+    - Consider related technologies as matching. For example, .NET Core implies ASP.NET knowledge.
+    - Refer to the candidate as "you". Never use their name
+    - For verdictReason, be direct and actionable. Tell the candidate exactly why they should or shouldn't apply
+    - resumeImprovements should be ordered by priority with high priority first
+    - summary should focus on the most important 2-3 factors that determined the fit score, not a general overview
+    - missingSkills should distinguish between hard requirements and nice-to-haves where possible
+
     Respond ONLY with a valid JSON object in exactly this shape, no extra text, no markdown:
     {
+      "verdict": "yes" | "no" | "maybe",
+      "verdictReason": "1-2 sentence explanation of the verdict",
       "overallFit": "excellent" | "good" | "moderate" | "poor",
       "fitScore": number between 0-100,
       "summary": "2-3 sentence honest recruiter summary",
       "matchingSkills": ["skill1", "skill2"],
       "missingSkills": ["skill1", "skill2"],
       "keyStrengths": ["strength1", "strength2"],
-      "potentialConcerns": ["concern1", "concern2"],
+      "areasToAddress": ["concern1", "concern2"],
       "resumeImprovements": [
         {
           "area": "area name",

@@ -6,18 +6,20 @@ import { Progress } from '@/components/ui/progress'
 import { CheckCircle2, XCircle, AlertCircle, AlertTriangle, Lightbulb, Shield } from 'lucide-react'
 
 interface Analysis {
+  verdict: 'yes' | 'no' | 'maybe'
+  verdictReason: string
   overallFit: 'excellent' | 'good' | 'moderate' | 'poor'
   fitScore: number
   summary: string
   matchingSkills: string[]
   missingSkills: string[]
+  keyStrengths: string[]
   resumeImprovements: {
     area: string
     suggestion: string
     priority: 'high' | 'medium' | 'low'
   }[]
-  keyStrengths: string[]
-  potentialConcerns: string[]
+  areasToAddress: string[]
 }
 
 interface AnalysisResultsProps {
@@ -38,9 +40,49 @@ const fitProgressColors = {
   poor: '[&>div]:bg-red-400',
 }
 
+const verdictConfig = {
+  yes: {
+    label: 'Yes, Apply',
+    color: 'text-emerald-400',
+    border: 'border-emerald-500/30',
+    bg: 'bg-emerald-500/10',
+    icon: CheckCircle2,
+  },
+  maybe: {
+    label: 'Maybe, Consider Applying',
+    color: 'text-amber-400',
+    border: 'border-amber-500/30',
+    bg: 'bg-amber-500/10',
+    icon: AlertCircle,
+  },
+  no: {
+    label: 'No, Skip This Role',
+    color: 'text-red-400',
+    border: 'border-red-500/30',
+    bg: 'bg-red-500/10',
+    icon: XCircle,
+  },
+}
+
 export function AnalysisResults({ analysis }: AnalysisResultsProps) {
+  const config = verdictConfig[analysis.verdict]
+  const VerdictIcon = config.icon
+
   return (
     <div className="space-y-6">
+      {/* Verdict Card */}
+      <Card className={`border ${config.border} ${config.bg} backdrop-blur-sm`}>
+        <CardContent className="flex items-center gap-4 p-6">
+          <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${config.bg}`}>
+            <VerdictIcon className={`h-6 w-6 ${config.color}`} />
+          </div>
+          <div>
+            <p className={`text-lg font-bold ${config.color}`}>{config.label}</p>
+            <p className="text-sm text-muted-foreground mt-1">{analysis.verdictReason}</p>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Overall Score Card */}
       <Card className="border border-border/50 bg-card/50 backdrop-blur-sm transition-all hover-glow-primary-40 hover:border-primary/50">
         <CardHeader className="pb-3">
@@ -158,18 +200,18 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
         </CardContent>
       </Card>
 
-      {/* Potential Concerns */}
-      {analysis.potentialConcerns.length > 0 && (
+      {/* Areas to Address */}
+      {analysis.areasToAddress.length > 0 && (
         <Card className="border border-border/50 bg-card/50 backdrop-blur-sm transition-all hover-glow-primary-40 hover:border-primary/50">
           <CardHeader className="pb-3">
             <CardTitle className="text-lg flex items-center gap-2">
               <AlertTriangle className="h-5 w-5 text-amber-400" />
-              Potential Concerns
+              Areas to Address
             </CardTitle>
           </CardHeader>
           <CardContent>
             <ul className="space-y-2">
-              {analysis.potentialConcerns.map((concern, index) => (
+              {analysis.areasToAddress.map((concern, index) => (
                 <li key={index} className="flex items-start gap-2 text-sm">
                   <AlertCircle className="h-4 w-4 text-amber-400 mt-0.5 shrink-0" />
                   <span>{concern}</span>
