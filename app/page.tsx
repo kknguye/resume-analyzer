@@ -2,9 +2,27 @@
 
 import { useState } from 'react'
 import { ResumeForm } from '@/components/resume-form'
-import { FileSearch, Sparkles, Target, Zap } from 'lucide-react'
+import { AnalysisResults } from '@/components/analysis-results'
+import { FileSearch, Sparkles, Target, Zap, ArrowLeft } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+
+interface Analysis {
+  overallFit: 'excellent' | 'good' | 'moderate' | 'poor'
+  fitScore: number
+  summary: string
+  matchingSkills: string[]
+  missingSkills: string[]
+  resumeImprovements: {
+    area: string
+    suggestion: string
+    priority: 'high' | 'medium' | 'low'
+  }[]
+  keyStrengths: string[]
+  potentialConcerns: string[]
+}
 
 export default function Home() {
+  const [analysis, setAnalysis] = useState<Analysis | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -26,6 +44,8 @@ export default function Home() {
         throw new Error('Failed to analyze resume')
       }
 
+      const data = await response.json()
+      setAnalysis(data.analysis)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
@@ -33,9 +53,14 @@ export default function Home() {
     }
   }
 
+  const handleReset = () => {
+    setAnalysis(null)
+    setError(null)
+  }
+
   return (
     <main className="min-h-screen bg-background flex flex-col">
-      {/* Header Section */}
+      {/* Header */}
       <header className="border-b border-border/50 bg-card/30 backdrop-blur-sm">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-3">
@@ -51,59 +76,66 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden border-b border-border/50">
-        {/* Subtle gradient orbs */}
-        <div className="pointer-events-none absolute -left-32 -top-32 h-96 w-96 rounded-full bg-primary/5 blur-3xl" />
-        <div className="pointer-events-none absolute -right-32 top-0 h-80 w-80 rounded-full bg-primary/10 blur-3xl" />
-
-        <div className="relative mx-auto max-w-6xl px-6 py-16 lg:py-24">
-          <div className="mx-auto max-w-3xl text-center">
-            <h1 className="text-balance text-4xl font-bold tracking-tight text-foreground lg:text-5xl">
-              See How Well You
-              <br />
-              <span className="text-primary">Match Any Job</span>
-            </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-pretty text-lg text-muted-foreground">
-              Upload your resume and paste a job description to get instant insights on your fit and how to improve.
-            </p>
-          </div>
-
-          {/* Feature highlights */}
-          <div className="mx-auto mt-12 grid max-w-3xl gap-4 sm:grid-cols-3">
-            {[
-              { icon: Target, title: 'Match Score', desc: 'See your fit percentage' },
-              { icon: Sparkles, title: 'Key Insights', desc: 'Skills & experience gaps' },
-              { icon: Zap, title: 'Instant Results', desc: 'Analysis in seconds' },
-            ].map((feature) => (
-              <div key={feature.title} className="group flex items-center gap-3 rounded-xl bg-card/50 p-4 transition-colors hover:bg-card border border-border/50 hover:border-primary/50 hover-glow-primary-40">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 transition-colors group-hover:bg-primary/20">
-                  <feature.icon className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <p className="font-medium text-foreground">{feature.title}</p>
-                  <p className="text-sm text-muted-foreground">{feature.desc}</p>
-                </div>
+      {!analysis ? (
+        <>
+          {/* Hero Section */}
+          <section className="relative overflow-hidden border-b border-border/50">
+            <div className="pointer-events-none absolute -left-32 -top-32 h-96 w-96 rounded-full bg-primary/5 blur-3xl" />
+            <div className="pointer-events-none absolute -right-32 top-0 h-80 w-80 rounded-full bg-primary/10 blur-3xl" />
+            <div className="relative mx-auto max-w-6xl px-6 py-16 lg:py-24">
+              <div className="mx-auto max-w-3xl text-center">
+                <h1 className="text-balance text-4xl font-bold tracking-tight text-foreground lg:text-5xl">
+                  See How Well You
+                  <br />
+                  <span className="text-primary">Match Any Job</span>
+                </h1>
+                <p className="mx-auto mt-6 max-w-2xl text-pretty text-lg text-muted-foreground">
+                  Upload your resume and paste a job description to get instant insights on your fit and how to improve.
+                </p>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
+              {/* Feature highlights */}
+              <div className="mx-auto mt-12 grid max-w-3xl gap-4 sm:grid-cols-3">
+                {[
+                  { icon: Target, title: 'Match Score', desc: 'See your fit percentage' },
+                  { icon: Sparkles, title: 'Key Insights', desc: 'Skills & experience gaps' },
+                  { icon: Zap, title: 'Instant Results', desc: 'Analysis in seconds' },
+                ].map((feature) => (
+                  <div key={feature.title} className="group flex items-center gap-3 rounded-xl bg-card/50 p-4 transition-colors hover:bg-card border border-border/50 hover:border-primary/50 hover-glow-primary-40">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 transition-colors group-hover:bg-primary/20">
+                      <feature.icon className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-foreground">{feature.title}</p>
+                      <p className="text-sm text-muted-foreground">{feature.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
 
-      {/* Form Section */}
-      <section className="mx-auto max-w-6xl px-6 py-12 lg:py-16 flex-1 w-full">
-        <ResumeForm onAnalyze={handleAnalyze} isLoading={isLoading} />
-
-        {/* Error Message */}
-        {error && (
-          <div className="mx-auto mt-6 max-w-xl rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-center text-sm text-destructive">
-            {error}
-          </div>
-        )}
-      </section>
+          {/* Form Section */}
+          <section className="mx-auto max-w-6xl px-6 py-12 lg:py-16 flex-1 w-full">
+            <ResumeForm onAnalyze={handleAnalyze} isLoading={isLoading} />
+            {error && (
+              <div className="mx-auto mt-6 max-w-xl rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-center text-sm text-destructive">
+                {error}
+              </div>
+            )}
+          </section>
+        </>
+      ) : (
+        <section className="mx-auto max-w-6xl px-6 py-12 w-full flex-1">
+          <Button variant="ghost" onClick={handleReset} className="mb-6 gap-2">
+            <ArrowLeft className="h-4 w-4" />
+            Analyze Another Resume
+          </Button>
+          <AnalysisResults analysis={analysis} />
+        </section>
+      )}
 
       {/* Footer */}
-      <footer className="border-t border-border/50 bg-card/20">
+      <footer className="mt-auto border-t border-border/50 bg-card/20">
         <div className="mx-auto max-w-6xl px-6 py-6">
           <p className="text-center text-sm text-muted-foreground">
             Your resume data is processed securely and never stored.
