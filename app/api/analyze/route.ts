@@ -1,6 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextRequest, NextResponse } from "next/server";
-import { PDFParse } from "pdf-parse";
+import { CanvasFactory } from 'pdf-parse/worker'
+import { PDFParse } from 'pdf-parse'
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
@@ -20,7 +21,7 @@ export async function POST(req: NextRequest) {
 
     const arrayBuffer = await resumeFile.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-    const parser = new PDFParse({ data: buffer });
+    const parser = new PDFParse({ data: buffer, CanvasFactory });
     const pdfData = await parser.getText();
     const resumeText = pdfData.text;
     await parser.destroy();
