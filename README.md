@@ -1,8 +1,16 @@
 # ResumeMatch
 
-An AI-powered resume analyzer that tells you how well you match a job description — and whether you should apply.
+An AI-powered resume analyzer that tells you how well you match a job description, and whether you should apply.
 
 Upload your resume as a PDF, paste a job description, and get instant feedback on your fit score, matching skills, gaps, and actionable resume improvements.
+
+## Live Demo
+
+[resumematch-dev.vercel.app](https://resumematch-dev.vercel.app)
+
+## Preview
+ 
+![ResumeMatch Preview](preview.png)
 
 ## Tech Stack
 
