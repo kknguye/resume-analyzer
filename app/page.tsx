@@ -5,6 +5,7 @@ import { ResumeForm } from '@/components/resume-form'
 import { AnalysisResults } from '@/components/analysis-results'
 import { FileSearch, Sparkles, Target, Zap, ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Spinner } from '@/components/ui/spinner'
 
 interface Analysis {
   verdict: 'yes' | 'no' | 'maybe'
@@ -24,11 +25,13 @@ interface Analysis {
 }
 
 export default function Home() {
+  const [file, setFile] = useState<File | null>(null)
   const [analysis, setAnalysis] = useState<Analysis | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const handleAnalyze = async (file: File, jobDescription: string) => {
+  const handleAnalyze = async (jobDescription: string) => {
+    if (!file) return
     setIsLoading(true)
     setError(null)
 
@@ -78,7 +81,7 @@ export default function Home() {
         </div>
       </header>
 
-      {!analysis ? (
+      {!analysis && !isLoading ? (
         <>
           {/* Hero Section */}
           <section className="relative overflow-hidden border-b border-border/50">
@@ -118,7 +121,7 @@ export default function Home() {
 
           {/* Form Section */}
           <section className="mx-auto max-w-6xl px-6 py-12 lg:py-16 flex-1 w-full">
-            <ResumeForm onAnalyze={handleAnalyze} isLoading={isLoading} />
+            <ResumeForm onAnalyze={handleAnalyze} onFileChange={setFile} file={file} isLoading={isLoading} />
             {error && (
               <div className="mx-auto mt-6 max-w-xl rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-center text-sm text-destructive">
                 {error}
@@ -128,14 +131,22 @@ export default function Home() {
         </>
       ) : (
         <section className="mx-auto max-w-6xl px-6 py-12 w-full flex-1">
-          <Button 
-            onClick={handleReset} 
-            className="mb-6 gap-2 cursor-pointer hover:bg-primary/80 px-6 py-5 glow-primary-40"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Analyze Another Resume
-          </Button>
-          <AnalysisResults analysis={analysis} />
+          {!isLoading && (
+            <Button
+              onClick={handleReset}
+              className="mb-6 gap-2 cursor-pointer hover:bg-primary/80 px-6 py-5 glow-primary-20"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Analyze Another Job
+            </Button>
+          )}
+          {isLoading ? (
+            <div className="flex items-center justify-center py-24">
+              <Spinner className="h-8 w-8 text-primary" />
+            </div>
+          ) : (
+            analysis && <AnalysisResults analysis={analysis} />
+          )}
         </section>
       )}
 
