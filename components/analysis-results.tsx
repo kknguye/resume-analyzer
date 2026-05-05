@@ -224,3 +224,70 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
     </div>
   )
 }
+
+export function AnalysisResultsSkeleton() {
+  return (
+    <div className="space-y-6">
+      {/* Verdict Skeleton */}
+      <Card className="border border-border/50 bg-card/50 backdrop-blur-sm">
+        <CardContent className="flex items-center gap-4 p-6">
+          <div className="h-12 w-12 rounded-xl bg-muted animate-pulse shrink-0" />
+          <div className="space-y-2 flex-1">
+            <div className="h-5 w-32 rounded-md bg-muted animate-pulse" />
+            <div className="h-4 w-full rounded-md bg-muted animate-pulse" />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Score Card Skeleton */}
+      <Card className="border border-border/50 bg-card/50 backdrop-blur-sm">
+        <CardHeader className="pb-3">
+          <div className="h-5 w-48 rounded-md bg-muted animate-pulse" />
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-baseline justify-between">
+            <div className="h-10 w-24 rounded-md bg-muted animate-pulse" />
+            <div className="h-6 w-28 rounded-full bg-muted animate-pulse" />
+          </div>
+          <div className="h-2 w-full rounded-full bg-muted animate-pulse" />
+          <div className="space-y-2">
+            <div className="h-4 w-full rounded-md bg-muted animate-pulse" />
+            <div className="h-4 w-3/4 rounded-md bg-muted animate-pulse" />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Skills Grid Skeleton */}
+      <div className="grid gap-6 md:grid-cols-2">
+        {[1, 2].map((i) => (
+          <Card key={i} className="border border-border/50 bg-card/50 backdrop-blur-sm">
+            <CardHeader className="pb-3">
+              <div className="h-5 w-36 rounded-md bg-muted animate-pulse" />
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-wrap gap-2">
+                {[1, 2, 3, 4].map((j) => (
+                  <div key={j} className="h-6 w-16 rounded-full bg-muted animate-pulse" />
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Remaining Cards Skeleton */}
+      {[1, 2, 3].map((i) => (
+        <Card key={i} className="border border-border/50 bg-card/50 backdrop-blur-sm">
+          <CardHeader className="pb-3">
+            <div className="h-5 w-40 rounded-md bg-muted animate-pulse" />
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {[1, 2, 3].map((j) => (
+              <div key={j} className="h-4 w-full rounded-md bg-muted animate-pulse" />
+            ))}
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  )
+}

@@ -2,10 +2,9 @@
 
 import { useState } from 'react'
 import { ResumeForm } from '@/components/resume-form'
-import { AnalysisResults } from '@/components/analysis-results'
+import { AnalysisResults, AnalysisResultsSkeleton } from '@/components/analysis-results'
 import { FileSearch, Sparkles, Target, Zap, ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Spinner } from '@/components/ui/spinner'
 
 interface Analysis {
   verdict: 'yes' | 'no' | 'maybe'
@@ -121,7 +120,12 @@ export default function Home() {
 
           {/* Form Section */}
           <section className="mx-auto max-w-6xl px-6 py-12 lg:py-16 flex-1 w-full">
-            <ResumeForm onAnalyze={handleAnalyze} onFileChange={setFile} file={file} isLoading={isLoading} />
+            <ResumeForm
+              onAnalyze={handleAnalyze}
+              onFileChange={setFile}
+              file={file}
+              isLoading={isLoading}
+            />
             {error && (
               <div className="mx-auto mt-6 max-w-xl rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-center text-sm text-destructive">
                 {error}
@@ -131,19 +135,16 @@ export default function Home() {
         </>
       ) : (
         <section className="mx-auto max-w-6xl px-6 py-12 w-full flex-1">
-          {!isLoading && (
-            <Button
-              onClick={handleReset}
-              className="mb-6 gap-2 cursor-pointer hover:bg-primary/80 px-6 py-5 glow-primary-20"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Analyze Another Job
-            </Button>
-          )}
+          <Button
+            onClick={handleReset}
+            disabled={isLoading}
+            className="mb-6 gap-2 cursor-pointer hover:bg-primary/80 px-6 py-5 glow-primary-20 disabled:opacity-40 disabled:shadow-none"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Analyze Another Job
+          </Button>
           {isLoading ? (
-            <div className="flex items-center justify-center py-24">
-              <Spinner className="h-8 w-8 text-primary" />
-            </div>
+            <AnalysisResultsSkeleton />
           ) : (
             analysis && <AnalysisResults analysis={analysis} />
           )}
@@ -153,9 +154,9 @@ export default function Home() {
       {/* Footer */}
       <footer className="mt-auto border-t border-border/50 bg-card/20">
         <div className="mx-auto max-w-6xl px-6 py-6">
-        <p className="text-center text-sm text-muted-foreground">
-          Your resume is never stored. Data is processed via Gemini AI and subject to Google's privacy policy.
-        </p>
+          <p className="text-center text-sm text-muted-foreground">
+            Your resume is never stored. Data is processed via Gemini AI and subject to Google's privacy policy.
+          </p>
         </div>
       </footer>
     </main>
